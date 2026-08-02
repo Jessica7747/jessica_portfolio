@@ -1,0 +1,30 @@
+.footer {
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text-soft);
+  white-space: nowrap;
+  word-break: break-word;
+}
+
+.footer a {
+  transition: opacity 160ms var(--ease-out);
+}
+
+.footer a:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .footer {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    white-space: normal;
+  }
+}

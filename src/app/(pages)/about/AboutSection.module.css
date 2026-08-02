@@ -1,0 +1,60 @@
+.group {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.divider {
+  width: 100%;
+  height: 0;
+  line-height: 0;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 650ms var(--ease-out),
+    transform 650ms var(--ease-out);
+}
+
+.divider img {
+  width: 100%;
+  height: 1px;
+  object-fit: cover;
+}
+
+.dividerVisible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.section .title,
+.section .item {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 650ms var(--ease-out),
+    transform 650ms var(--ease-out);
+}
+
+.section .title {
+  transition-delay: 120ms;
+}
+
+.visible .title,
+.visible .item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .divider,
+  .dividerVisible,
+  .section .title,
+  .section .item,
+  .visible .title,
+  .visible .item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

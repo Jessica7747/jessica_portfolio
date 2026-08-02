@@ -1,0 +1,400 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: clamp(12px, 2.5vh, 28px) clamp(12px, 2.5vw, 28px);
+  overflow-y: auto;
+  /* Don't animate opacity on this node — it kills backdrop-filter. */
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* Apple material: frosted glass, not flat gray */
+  background: rgba(210, 210, 215, 0.28);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  pointer-events: none;
+}
+
+.dialog {
+  position: relative;
+  z-index: 1;
+  width: min(1240px, 100%);
+  max-height: none;
+  min-height: calc(100vh - clamp(24px, 5vh, 56px));
+  height: fit-content;
+  margin: auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* Figma: 64px between header block and body text */
+  gap: 72px;
+  padding: 40px 56px 56px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  /*
+    No opacity/transform on this node — both blank <video> in Chromium.
+    Entrance is handled by the overlay backdrop + content reveals only.
+  */
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.04),
+    0 22px 70px rgba(0, 0, 0, 0.14);
+}
+
+.dialogVisible {
+  /* retained for JS class toggles; intentionally no visual transform */
+}
+
+/* Soft progressive content reveals — not dramatic */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 560ms var(--ease-apple),
+    transform 560ms var(--ease-apple);
+}
+
+.revealIn {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.headerRow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.close {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 180ms var(--ease-apple),
+    transform 180ms var(--ease-apple);
+}
+
+.close:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.close:active {
+  transform: scale(0.94);
+}
+
+.title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 478px;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: #f5f5f7;
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+.heroVideo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  background: #f5f5f7;
+  /* Own compositing layer; no filters/opacity on ancestors */
+  isolation: isolate;
+}
+
+.heroLogo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 146px;
+  height: 146px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.heroLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.meta {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  line-height: 1.35;
+}
+
+.metaLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-soft);
+  letter-spacing: -0.01em;
+}
+
+.metaValue {
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+.split {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.016em;
+}
+
+.splitLabel {
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.splitCopy,
+.reflection {
+  width: min(829px, 100%);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.nda {
+  display: flex;
+  width: 100%;
+  min-height: 132px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 32px 24px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.ndaIcon {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.ndaIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.ndaText {
+  max-width: 36em;
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+  color: var(--text-muted);
+}
+
+.ndaText a {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.reflection {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 32px;
+}
+
+.reflectionLead em {
+  font-family: var(--font);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.lesson {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lessonTitle {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.lessonBody {
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.016em;
+  color: var(--text-soft);
+}
+
+.photos {
+  display: flex;
+  width: 100%;
+  height: clamp(200px, 28vw, 288px);
+  align-items: stretch;
+  gap: 7px;
+}
+
+.photo {
+  position: relative;
+  flex: 0 0 auto;
+  width: calc(clamp(200px, 28vw, 288px) * 0.75);
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f5f5f7;
+}
+
+.photoWide {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.photoImage {
+  object-fit: cover;
+}
+
+@media (max-width: 1280px) {
+  .dialog {
+    width: min(1240px, calc(100% - 24px));
+  }
+}
+
+@media (max-width: 900px) {
+  .overlay {
+    padding: 8px;
+    align-items: stretch;
+  }
+
+  .dialog {
+    width: 100%;
+    min-height: calc(100vh - 16px);
+    max-height: none;
+    gap: 48px;
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .hero {
+    height: clamp(220px, 48vw, 320px);
+  }
+
+  .heroLogo {
+    width: 96px;
+    height: 96px;
+  }
+
+  .metaValue {
+    white-space: normal;
+  }
+
+  .split {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .splitCopy,
+  .reflection {
+    width: 100%;
+  }
+
+  .photos {
+    flex-direction: row;
+    height: clamp(120px, 28vw, 200px);
+  }
+
+  .photo {
+    flex: 0 0 auto;
+    width: calc(clamp(120px, 28vw, 200px) * 0.75);
+    height: 100%;
+  }
+
+  .photoWide {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog,
+  .reveal {
+    transition: none;
+  }
+
+  .dialog {
+    transform: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

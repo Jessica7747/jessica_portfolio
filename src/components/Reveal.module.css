@@ -1,0 +1,37 @@
+.reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition-property: opacity, transform;
+  transition-duration: 700ms;
+  transition-timing-function: var(--ease-out);
+}
+
+.up {
+  transform: translate3d(0, 24px, 0) scale(0.98);
+}
+
+.fade {
+  transform: none;
+}
+
+.scaleUp {
+  transform: translate3d(0, 16px, 0) scale(0.98);
+}
+
+.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .up,
+  .fade,
+  .scaleUp,
+  .visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
