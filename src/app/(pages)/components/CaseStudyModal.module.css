@@ -181,14 +181,14 @@
 }
 
 .metaLabel {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-soft);
   letter-spacing: -0.01em;
 }
 
 .metaValue {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   letter-spacing: -0.015em;
   white-space: nowrap;
@@ -200,7 +200,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.47;
   letter-spacing: -0.016em;
 }
@@ -247,7 +247,7 @@
 
 .ndaText {
   max-width: 36em;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.4;
   letter-spacing: -0.012em;
   color: var(--text-muted);
@@ -278,14 +278,14 @@
 }
 
 .lessonTitle {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.02em;
 }
 
 .lessonBody {
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.47;
   letter-spacing: -0.016em;
   color: var(--text-soft);
