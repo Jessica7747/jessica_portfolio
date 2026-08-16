@@ -6,13 +6,8 @@ import { appleCaseStudy } from "./components/appleCaseStudy";
 import { CaseStudyModal } from "./components/CaseStudyModal";
 import { ProjectCard } from "./components/ProjectCard";
 import { ProjectRow } from "./components/ProjectRow";
+import type { Project } from "./components/projects";
 import styles from "./page.module.css";
-
-type Project = {
-  company: string;
-  title: string;
-  variant: "apple" | "genkit" | "aws" | "azure" | "copilot" | "spotify";
-};
 
 type WorkPageClientProps = {
   rows: Project[][];
@@ -63,6 +58,7 @@ export function WorkPageClient({ rows }: WorkPageClientProps) {
               <ProjectCard
                 key={project.company}
                 {...project}
+                id={`project-${project.variant}`}
                 onOpen={project.variant === "apple" ? openApple : undefined}
               />
             ))}

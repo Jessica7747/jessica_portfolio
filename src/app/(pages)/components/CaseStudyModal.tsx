@@ -10,6 +10,7 @@ import {
 } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { LoopingVideo } from "./LoopingVideo";
+import { getSuggestedProjects, type Project } from "./projects";
 import styles from "./CaseStudyModal.module.css";
 
 export type CaseStudyContent = {
@@ -40,6 +41,26 @@ type CaseStudyModalProps = {
 const CLOSE_MS = 280;
 const STAGGER_MS = 90;
 const STAGGER_BASE_MS = 120;
+
+const SUGGESTED_MEDIA: Record<
+  Project["variant"],
+  { type: "image" | "logo"; src: string; logoClass?: string }
+> = {
+  apple: { type: "image", src: "/images/apple/video-poster.png" },
+  genkit: {
+    type: "logo",
+    src: "/images/genkit-logo.png",
+    logoClass: "suggestLogoWide",
+  },
+  aws: { type: "logo", src: "/images/aws-logo.png" },
+  azure: { type: "image", src: "/images/azure-bg.png" },
+  copilot: { type: "image", src: "/images/copilot.png" },
+  spotify: {
+    type: "logo",
+    src: "/images/spotify-logo.png",
+    logoClass: "suggestLogoSpotify",
+  },
+};
 
 function RevealBlock({
   active,
@@ -124,11 +145,25 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
 
   const mailto = content.ndaMailto ?? "mailto:jl4229@cornell.edu";
   const show = reducedMotion || contentIn;
+  const suggested = getSuggestedProjects(content.id);
   let step = 0;
 
+  const openSuggested = (variant: Project["variant"]) => {
+    onClose();
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(`project-${variant}`);
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  };
+
   return (
-    <div className={styles.overlay} onClick={onClose} role="presentation">
-      <div className={styles.backdrop} aria-hidden />
+    <div className={styles.overlay} role="presentation">
+      <button
+        type="button"
+        className={styles.backdrop}
+        onClick={onClose}
+        aria-label="Close"
+      />
       <div
         className={[styles.dialog, visible ? styles.dialogVisible : ""]
           .filter(Boolean)
@@ -136,7 +171,6 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        onClick={(event) => event.stopPropagation()}
       >
         <div className={styles.top}>
           <div className={styles.headerRow}>
@@ -156,7 +190,7 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
             Keep the video OUTSIDE opacity/transform reveals — those break
             Chromium video compositing and show a blank white frame.
           */}
-          <div className={styles.hero}>
+          <div className={styles.hero} onClick={onClose} role="presentation">
             {content.heroVideoSrc ? (
               <LoopingVideo
                 src={`${content.heroVideoSrc}?v=7`}
@@ -203,22 +237,15 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
 
           <RevealBlock active={show} index={step++} className={styles.nda}>
             <span className={styles.ndaIcon} aria-hidden>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.5" />
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
-                  d="M8.5 11.25V9.5a3.5 3.5 0 0 1 7 0v1.75"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <rect
-                  x="7.75"
-                  y="11.25"
-                  width="8.5"
-                  height="6"
-                  rx="1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M8.25 9.5V7.2a3.75 3.75 0 1 1 7.5 0v2.3h1.9c1.27 0 2.3 1.03 2.3 2.3v8.2c0 1.27-1.03 2.3-2.3 2.3H6.35c-1.27 0-2.3-1.03-2.3-2.3v-8.2c0-1.27 1.03-2.3 2.3-2.3h1.9Zm2.1 0h3.3V7.2a1.65 1.65 0 0 0-3.3 0v2.3Z"
                 />
               </svg>
             </span>
@@ -278,6 +305,66 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
               </RevealBlock>
             </div>
           </div>
+
+          <RevealBlock active={show} index={step++} className={styles.split}>
+            <p className={styles.splitLabel}>More work</p>
+            <div className={styles.suggested}>
+              {suggested.map((project) => {
+                const media = SUGGESTED_MEDIA[project.variant];
+                return (
+                  <button
+                    key={project.variant}
+                    type="button"
+                    className={styles.suggestedCard}
+                    onClick={() => openSuggested(project.variant)}
+                  >
+                    <div
+                      className={[
+                        styles.suggestedThumb,
+                        styles[`suggest-${project.variant}`],
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      {media.type === "image" ? (
+                        <Image
+                          src={media.src}
+                          alt=""
+                          fill
+                          className={styles.suggestedImage}
+                          sizes="(max-width: 900px) 45vw, 400px"
+                        />
+                      ) : (
+                        <div
+                          className={[
+                            styles.suggestedLogo,
+                            media.logoClass ? styles[media.logoClass] : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
+                          <Image
+                            src={media.src}
+                            alt=""
+                            fill
+                            className={styles.suggestedLogoImage}
+                            sizes="140px"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <p className={styles.suggestedCaption}>
+                      <span>{project.company}</span>
+                      <span className={styles.suggestedCaptionMuted}>
+                        {" "}
+                        · {project.title}
+                      </span>
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </RevealBlock>
         </div>
       </div>
     </div>

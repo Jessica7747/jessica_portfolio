@@ -1,19 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type MouseEvent,
-} from "react";
+import { useEffect, useState } from "react";
+import { LoopingVideo } from "./LoopingVideo";
 import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   company: string;
   title: string;
   variant: "apple" | "genkit" | "aws" | "azure" | "copilot" | "spotify";
+  id?: string;
   staggerMs?: number;
   revealed?: boolean;
   onOpen?: () => void;
@@ -23,14 +19,13 @@ export function ProjectCard({
   company,
   title,
   variant,
+  id,
   staggerMs = 0,
   revealed = false,
   onOpen,
 }: ProjectCardProps) {
-  const cardRef = useRef<HTMLElement | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [revealSettled, setRevealSettled] = useState(false);
-  const [hover, setHover] = useState({ active: false, x: 0, imgX: 0 });
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -56,45 +51,15 @@ export function ProjectCard({
     return () => window.clearTimeout(timer);
   }, [revealed, reducedMotion, staggerMs]);
 
-  const onMove = useCallback(
-    (event: MouseEvent<HTMLElement>) => {
-      if (reducedMotion) return;
-      if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
-
-      const node = cardRef.current;
-      if (!node) return;
-
-      const rect = node.getBoundingClientRect();
-      const ratio = (event.clientX - rect.left) / rect.width;
-      const shift = (ratio - 0.5) * 8;
-      setHover({
-        active: true,
-        x: Math.max(-4, Math.min(4, shift)),
-        imgX: Math.max(-3, Math.min(3, -shift * 0.5)),
-      });
-    },
-    [reducedMotion],
-  );
-
-  const onEnter = () => {
-    if (reducedMotion) return;
-    setHover((prev) => ({ ...prev, active: true }));
-  };
-
-  const onLeave = () => {
-    setHover({ active: false, x: 0, imgX: 0 });
-  };
-
   const isVisible = revealed || reducedMotion;
-  const canTrack = !reducedMotion && hover.active && isVisible;
+  const motionActive = isVisible && !reducedMotion;
 
   return (
     <article
-      ref={cardRef}
+      id={id}
       className={[
         styles.card,
         isVisible ? styles.visible : "",
-        hover.active && !reducedMotion ? styles.hovered : "",
         onOpen ? styles.clickable : "",
       ]
         .filter(Boolean)
@@ -105,9 +70,6 @@ export function ProjectCard({
             ? "0ms"
             : `${staggerMs}ms`,
       }}
-      onMouseEnter={onEnter}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
       onClick={onOpen}
       onKeyDown={
         onOpen
@@ -124,42 +86,24 @@ export function ProjectCard({
     >
       <div
         className={[styles.thumb, styles[variant]].filter(Boolean).join(" ")}
-        style={{
-          transform: canTrack
-            ? `translate3d(${hover.x}px, -2px, 0) scale(1.025)`
-            : hover.active && !reducedMotion
-              ? "translate3d(0, -2px, 0) scale(1.025)"
-              : undefined,
-        }}
       >
-        <div
-          className={styles.media}
-          style={{
-            transform: canTrack
-              ? `translate3d(${hover.imgX}px, 0, 0) scale(1.02)`
-              : undefined,
-          }}
-        >
+        <div className={styles.media}>
           {variant === "apple" && (
             <>
               <Image
-                src="/images/apple-bg.png"
+                src="/images/apple/video-poster.png"
                 alt=""
                 fill
                 className={styles.bgImage}
                 sizes="(max-width: 900px) 100vw, 42vw"
                 priority
               />
-              <div className={styles.overlay} />
-              <div className={styles.logoWrap}>
-                <Image
-                  src="/images/reminders-icon.png"
-                  alt=""
-                  width={73}
-                  height={73}
-                  className={styles.logo}
-                />
-              </div>
+              <LoopingVideo
+                src="/videos/reminders-hero.mp4?v=7"
+                poster="/images/apple/video-poster.png"
+                active={motionActive}
+                className={styles.coverVideo}
+              />
             </>
           )}
 

@@ -8,13 +8,14 @@ type LoopingVideoProps = {
   src: string;
   poster: string;
   active: boolean;
+  className?: string;
 };
 
 /**
  * Modal hero video — autoplay + continuous loop.
  * Chromium often stalls near EOF or drops autoplay; we keep a rAF pump.
  */
-export function LoopingVideo({ src, poster, active }: LoopingVideoProps) {
+export function LoopingVideo({ src, poster, active, className }: LoopingVideoProps) {
   const ref = useRef<HTMLVideoElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -85,7 +86,7 @@ export function LoopingVideo({ src, poster, active }: LoopingVideoProps) {
   return (
     <video
       ref={ref}
-      className={styles.heroVideo}
+      className={className ?? styles.heroVideo}
       src={src}
       poster={poster}
       autoPlay
