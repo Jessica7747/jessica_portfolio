@@ -41,15 +41,18 @@ export const appleCaseStudy: CaseStudyContent = {
     {
       src: "/images/apple/reflection-1.jpg",
       alt: "Jessica with Apple colleagues in the office",
+      caption: "with my iBuddies Tara and Dominic.",
     },
     {
       src: "/images/apple/reflection-2.jpg",
       alt: "Apple team dinner",
+      caption: "Notes & Reminders team social!",
       wide: true,
     },
     {
       src: "/images/apple/reflection-3.jpg",
       alt: "Jessica outdoors with Apple colleagues",
+      caption: "be found Reminders @ Infinite Loop!",
     },
   ],
   reflectionClose:

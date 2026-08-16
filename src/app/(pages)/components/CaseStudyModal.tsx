@@ -13,29 +13,42 @@ import { LoopingVideo } from "./LoopingVideo";
 import { getSuggestedProjects, type Project } from "./projects";
 import styles from "./CaseStudyModal.module.css";
 
+export type CaseStudySection = {
+  title: string;
+  body: ReactNode;
+};
+
 export type CaseStudyContent = {
   id: string;
   title: string;
   heroSrc: string;
   heroVideoSrc?: string;
   heroLogoSrc?: string;
+  /** Logo-centered hero (e.g. Genkit) vs full-bleed media. */
+  heroMode?: "media" | "logo";
   role: string;
   timeline: string;
   skills: string;
+  teamLabel?: string;
   team: string;
   impact: string;
+  showNda?: boolean;
   ndaMailto?: string;
-  reflectionLead: ReactNode;
-  lessonsIntro: string;
-  lessons: { title: string; body: string }[];
-  photos: { src: string; alt: string; wide?: boolean }[];
-  reflectionClose: string;
+  /** Process narrative sections (Genkit-style). */
+  sections?: CaseStudySection[];
+  /** Apple-style reflection block. */
+  reflectionLead?: ReactNode;
+  lessonsIntro?: string;
+  lessons?: { title: string; body: string }[];
+  photos?: { src: string; alt: string; caption?: string; wide?: boolean }[];
+  reflectionClose?: string;
 };
 
 type CaseStudyModalProps = {
   open: boolean;
   content: CaseStudyContent | null;
   onClose: () => void;
+  onOpenProject?: (variant: Project["variant"]) => void;
 };
 
 const CLOSE_MS = 280;
@@ -91,7 +104,12 @@ function RevealBlock({
   );
 }
 
-export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) {
+export function CaseStudyModal({
+  open,
+  content,
+  onClose,
+  onOpenProject,
+}: CaseStudyModalProps) {
   const reducedMotion = usePrefersReducedMotion();
   const titleId = useId();
   const [mounted, setMounted] = useState(false);
@@ -146,9 +164,19 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
   const mailto = content.ndaMailto ?? "mailto:jl4229@cornell.edu";
   const show = reducedMotion || contentIn;
   const suggested = getSuggestedProjects(content.id);
+  const showNda = content.showNda !== false;
+  const hasReflection =
+    Boolean(content.reflectionLead) ||
+    Boolean(content.lessons?.length) ||
+    Boolean(content.photos?.length) ||
+    Boolean(content.reflectionClose);
   let step = 0;
 
   const openSuggested = (variant: Project["variant"]) => {
+    if (onOpenProject) {
+      onOpenProject(variant);
+      return;
+    }
     onClose();
     window.requestAnimationFrame(() => {
       const target = document.getElementById(`project-${variant}`);
@@ -197,6 +225,19 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
                 poster={content.heroSrc}
                 active={visible}
               />
+            ) : content.heroMode === "logo" && content.heroLogoSrc ? (
+              <div className={styles.heroLogoStage}>
+                <div className={styles.heroLogoMark}>
+                  <Image
+                    src={content.heroLogoSrc}
+                    alt=""
+                    fill
+                    className={styles.heroLogoImage}
+                    sizes="220px"
+                    priority
+                  />
+                </div>
+              </div>
             ) : (
               <Image
                 src={content.heroSrc}
@@ -225,7 +266,9 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
               <p className={styles.metaValue}>{content.skills}</p>
             </div>
             <div className={styles.metaItem}>
-              <p className={styles.metaLabel}>Team</p>
+              <p className={styles.metaLabel}>
+                {content.teamLabel ?? "Team"}
+              </p>
               <p className={styles.metaValue}>{content.team}</p>
             </div>
           </RevealBlock>
@@ -235,76 +278,116 @@ export function CaseStudyModal({ open, content, onClose }: CaseStudyModalProps) 
             <p className={styles.splitCopy}>{content.impact}</p>
           </RevealBlock>
 
-          <RevealBlock active={show} index={step++} className={styles.nda}>
-            <span className={styles.ndaIcon} aria-hidden>
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M8.25 9.5V7.2a3.75 3.75 0 1 1 7.5 0v2.3h1.9c1.27 0 2.3 1.03 2.3 2.3v8.2c0 1.27-1.03 2.3-2.3 2.3H6.35c-1.27 0-2.3-1.03-2.3-2.3v-8.2c0-1.27 1.03-2.3 2.3-2.3h1.9Zm2.1 0h3.3V7.2a1.65 1.65 0 0 0-3.3 0v2.3Z"
-                />
-              </svg>
-            </span>
-            <p className={styles.ndaText}>
-              Project details remain under NDA. Please reach out{" "}
-              <a href={mailto}>here</a> to learn more about my experience.
-            </p>
-          </RevealBlock>
-
-          <div className={styles.split}>
-            <RevealBlock active={show} index={step} as="p" className={styles.splitLabel}>
-              Reflection
-            </RevealBlock>
-            <div className={styles.reflection}>
-              <RevealBlock active={show} index={step++} as="p" className={styles.reflectionLead}>
-                {content.reflectionLead}
-              </RevealBlock>
-              <RevealBlock active={show} index={step++} as="p">
-                {content.lessonsIntro}
-              </RevealBlock>
-              {content.lessons.map((lesson) => (
-                <RevealBlock
-                  key={lesson.title}
-                  active={show}
-                  index={step++}
-                  className={styles.lesson}
+          {showNda && (
+            <RevealBlock active={show} index={step++} className={styles.nda}>
+              <span className={styles.ndaIcon} aria-hidden>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <p className={styles.lessonTitle}>{lesson.title}</p>
-                  <p className={styles.lessonBody}>{lesson.body}</p>
-                </RevealBlock>
-              ))}
-              <RevealBlock active={show} index={step++}>
-                <div className={styles.photos}>
-                  {content.photos.map((photo) => (
-                    <div
-                      key={photo.src}
-                      className={[
-                        styles.photo,
-                        photo.wide ? styles.photoWide : "",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                    >
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        className={styles.photoImage}
-                        sizes="(max-width: 900px) 100vw, 40vw"
-                      />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M8.25 9.5V7.2a3.75 3.75 0 1 1 7.5 0v2.3h1.9c1.27 0 2.3 1.03 2.3 2.3v8.2c0 1.27-1.03 2.3-2.3 2.3H6.35c-1.27 0-2.3-1.03-2.3-2.3v-8.2c0-1.27 1.03-2.3 2.3-2.3h1.9Zm2.1 0h3.3V7.2a1.65 1.65 0 0 0-3.3 0v2.3Z"
+                  />
+                </svg>
+              </span>
+              <p className={styles.ndaText}>
+                Project details remain under NDA. Please reach out{" "}
+                <a href={mailto}>here</a> to learn more about my experience.
+              </p>
+            </RevealBlock>
+          )}
+
+          {content.sections?.map((section) => (
+            <RevealBlock
+              key={section.title}
+              active={show}
+              index={step++}
+              className={styles.split}
+            >
+              <p className={styles.splitLabel}>{section.title}</p>
+              <p className={styles.splitCopy}>{section.body}</p>
+            </RevealBlock>
+          ))}
+
+          {hasReflection && (
+            <div className={styles.split}>
+              <RevealBlock
+                active={show}
+                index={step}
+                as="p"
+                className={styles.splitLabel}
+              >
+                Reflection
+              </RevealBlock>
+              <div className={styles.reflection}>
+                {content.reflectionLead && (
+                  <RevealBlock
+                    active={show}
+                    index={step++}
+                    as="p"
+                    className={styles.reflectionLead}
+                  >
+                    {content.reflectionLead}
+                  </RevealBlock>
+                )}
+                {content.lessonsIntro && (
+                  <RevealBlock active={show} index={step++} as="p">
+                    {content.lessonsIntro}
+                  </RevealBlock>
+                )}
+                {content.lessons?.map((lesson) => (
+                  <RevealBlock
+                    key={lesson.title}
+                    active={show}
+                    index={step++}
+                    className={styles.lesson}
+                  >
+                    <p className={styles.lessonTitle}>{lesson.title}</p>
+                    <p className={styles.lessonBody}>{lesson.body}</p>
+                  </RevealBlock>
+                ))}
+                {content.photos && content.photos.length > 0 && (
+                  <RevealBlock active={show} index={step++}>
+                    <div className={styles.photos}>
+                      {content.photos.map((photo) => (
+                        <div
+                          key={photo.src}
+                          className={[
+                            styles.photo,
+                            photo.wide ? styles.photoWide : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          tabIndex={photo.caption ? 0 : undefined}
+                        >
+                          <Image
+                            src={photo.src}
+                            alt={photo.alt}
+                            fill
+                            className={styles.photoImage}
+                            sizes="(max-width: 900px) 100vw, 40vw"
+                          />
+                          {photo.caption && (
+                            <span className={styles.photoCaption}>
+                              {photo.caption}
+                            </span>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </RevealBlock>
-              <RevealBlock active={show} index={step++} as="p">
-                {content.reflectionClose}
-              </RevealBlock>
+                  </RevealBlock>
+                )}
+                {content.reflectionClose && (
+                  <RevealBlock active={show} index={step++} as="p">
+                    {content.reflectionClose}
+                  </RevealBlock>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           <RevealBlock active={show} index={step++} className={styles.split}>
             <p className={styles.splitLabel}>More work</p>
