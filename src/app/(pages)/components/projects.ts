@@ -40,7 +40,7 @@ export const projects: Project[] = [
   },
   {
     company: "Spotify",
-    title: "Multilingual Music Experiences",
+    title: "Sing Along",
     variant: "spotify",
   },
 ];
@@ -50,9 +50,3 @@ export const projectRows = [
   projects.slice(2, 4),
   projects.slice(4, 6),
 ];
-
-export function getSuggestedProjects(currentId: string, limit = 2): Project[] {
-  return projects
-    .filter((project) => project.variant !== currentId)
-    .slice(0, limit);
-}

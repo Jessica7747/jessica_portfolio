@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Footer } from "./Footer";
 import { NavLinks } from "./NavLinks";
 import styles from "./Sidebar.module.css";
 
@@ -13,26 +15,33 @@ export function Sidebar({
 }: SidebarProps) {
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.avatar}>
-        <Image
-          src="/images/logo.png"
-          alt="Jessica Liu"
-          width={75}
-          height={75}
-          className={styles.avatarImage}
-          sizes="75px"
-          quality={95}
-          priority
-        />
+      <div className={styles.top}>
+        <Link
+          href="/"
+          className={styles.avatar}
+          aria-label="Home"
+        >
+          <Image
+            src="/images/logo.png"
+            alt="Jessica Liu"
+            width={75}
+            height={75}
+            className={styles.avatarImage}
+            sizes="75px"
+            quality={95}
+            priority
+          />
+        </Link>
+        <p className={styles.bio}>
+          <span>
+            I&apos;m Jessica, a product designer on an adventure to design
+            tomorrow&apos;s solutions today.{" "}
+          </span>
+          <span className={styles.bioMuted}>{previousAt}</span>
+        </p>
+        <NavLinks active={active} />
       </div>
-      <p className={styles.bio}>
-        <span>
-          I&apos;m Jessica, a product designer on an adventure to design
-          tomorrow&apos;s solutions today.{" "}
-        </span>
-        <span className={styles.bioMuted}>{previousAt}</span>
-      </p>
-      <NavLinks active={active} />
+      <Footer />
     </aside>
   );
 }

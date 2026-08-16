@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { appleCaseStudy } from "./components/appleCaseStudy";
-import { CaseStudyModal } from "./components/CaseStudyModal";
+import { CASE_STUDIES } from "./components/caseStudies";
 import { ProjectCard } from "./components/ProjectCard";
 import { ProjectRow } from "./components/ProjectRow";
 import type { Project } from "./components/projects";
@@ -21,7 +20,6 @@ const FIRST_ROW_DELAY_MS = 40;
 export function WorkPageClient({ rows }: WorkPageClientProps) {
   const reducedMotion = usePrefersReducedMotion();
   const [activeRow, setActiveRow] = useState(reducedMotion ? rows.length : -1);
-  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (reducedMotion) {
@@ -43,33 +41,27 @@ export function WorkPageClient({ rows }: WorkPageClientProps) {
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [reducedMotion, rows.length]);
 
-  const openApple = useCallback(() => setModalOpen(true), []);
-  const closeModal = useCallback(() => setModalOpen(false), []);
-
   return (
-    <>
-      <div className={styles.grid}>
-        {rows.map((row, index) => (
-          <ProjectRow
-            key={row.map((item) => item.company).join("-")}
-            active={activeRow >= index}
-          >
-            {row.map((project) => (
-              <ProjectCard
-                key={project.company}
-                {...project}
-                id={`project-${project.variant}`}
-                onOpen={project.variant === "apple" ? openApple : undefined}
-              />
-            ))}
-          </ProjectRow>
-        ))}
-      </div>
-      <CaseStudyModal
-        open={modalOpen}
-        content={appleCaseStudy}
-        onClose={closeModal}
-      />
-    </>
+    <div className={styles.grid}>
+      {rows.map((row, index) => (
+        <ProjectRow
+          key={row.map((item) => item.company).join("-")}
+          active={activeRow >= index}
+        >
+          {row.map((project) => (
+            <ProjectCard
+              key={project.company}
+              {...project}
+              id={`project-${project.variant}`}
+              href={
+                CASE_STUDIES[project.variant]
+                  ? `/work/${project.variant}`
+                  : undefined
+              }
+            />
+          ))}
+        </ProjectRow>
+      ))}
+    </div>
   );
 }

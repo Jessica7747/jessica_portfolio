@@ -1,10 +1,20 @@
 .sidebar {
   position: fixed;
   top: var(--page-pad);
+  bottom: var(--page-pad);
   left: var(--page-pad);
   z-index: 20;
   display: flex;
   width: var(--sidebar-width);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.top {
+  display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
@@ -12,10 +22,13 @@
 
 .avatar {
   position: relative;
+  display: block;
   width: 75px;
   height: 75px;
   flex-shrink: 0;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
 }
 
 .avatarImage {
@@ -41,8 +54,10 @@
   .sidebar {
     position: static;
     top: auto;
+    bottom: auto;
     left: auto;
     z-index: auto;
     width: 100%;
+    gap: 24px;
   }
 }

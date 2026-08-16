@@ -1,4 +1,4 @@
-import type { CaseStudyContent } from "./CaseStudyModal";
+import type { CaseStudyContent } from "./CaseStudyPage";
 
 export const appleCaseStudy: CaseStudyContent = {
   id: "apple",
@@ -41,15 +41,18 @@ export const appleCaseStudy: CaseStudyContent = {
     {
       src: "/images/apple/reflection-1.jpg",
       alt: "Jessica with Apple colleagues in the office",
+      caption: "With my iBuddies Tara and Dominic.",
     },
     {
       src: "/images/apple/reflection-2.jpg",
       alt: "Apple team dinner",
+      caption: "Notes & Reminders team social!",
       wide: true,
     },
     {
       src: "/images/apple/reflection-3.jpg",
       alt: "Jessica outdoors with Apple colleagues",
+      caption: "Reminders spotted at Infinite Loop",
     },
   ],
   reflectionClose:

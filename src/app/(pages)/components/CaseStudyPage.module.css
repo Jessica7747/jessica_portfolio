@@ -1,0 +1,380 @@
+.page {
+  display: flex;
+  width: 100%;
+  max-width: 1112px;
+  flex-direction: column;
+  gap: 72px;
+}
+
+/* Soft progressive content reveals — not dramatic */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 560ms var(--ease-apple),
+    transform 560ms var(--ease-apple);
+}
+
+.revealIn {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.headerRow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 478px;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: #f5f5f7;
+}
+
+.heroImage {
+  object-fit: cover;
+  object-position: center;
+  inset: auto;
+  width: 118%;
+  height: 118%;
+  top: -6%;
+  left: -8%;
+}
+
+.heroVideo {
+  position: absolute;
+  z-index: 1;
+  width: 118%;
+  height: 118%;
+  top: -6%;
+  left: -8%;
+  object-fit: cover;
+  object-position: center;
+  background: #f5f5f7;
+  isolation: isolate;
+}
+
+.heroLogo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 146px;
+  height: 146px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.heroLogoImage {
+  object-fit: contain;
+}
+
+.heroLogoStage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+}
+
+.heroLogoMark {
+  position: relative;
+  width: min(220px, 28%);
+  aspect-ratio: 156 / 82;
+}
+
+.body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.meta {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  column-gap: 24px;
+  row-gap: 24px;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.metaLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-soft);
+  letter-spacing: -0.01em;
+}
+
+.metaValue {
+  font-size: 16px;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  white-space: pre-line;
+}
+
+.split {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 168px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 32px;
+  font-size: 16px;
+  line-height: 1.47;
+  letter-spacing: -0.016em;
+}
+
+.splitLabel {
+  font-weight: 500;
+}
+
+.splitCopy,
+.reflection {
+  min-width: 0;
+}
+
+.nda {
+  display: flex;
+  width: 100%;
+  min-height: 132px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 32px 24px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.ndaIcon {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.ndaIcon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ndaText {
+  width: fit-content;
+  max-width: none;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+  color: var(--text-muted);
+}
+
+.ndaText a {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.reflection {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 32px;
+}
+
+.reflectionLead em {
+  font-family: var(--font);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.lesson {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lessonTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.lessonBody {
+  font-size: 16px;
+  line-height: 1.47;
+  letter-spacing: -0.016em;
+  color: var(--text-soft);
+}
+
+.photos {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 3fr);
+  gap: 7px;
+  height: clamp(160px, 22vw, 288px);
+}
+
+.photo {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f5f5f7;
+}
+
+.photoImage {
+  object-fit: cover;
+  transition:
+    transform 500ms var(--ease-apple),
+    filter 500ms var(--ease-apple);
+}
+
+.photoCaption {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  padding: 9px 12px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(22, 22, 24, 0.48);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 420ms var(--ease-apple),
+    transform 480ms var(--ease-apple);
+  pointer-events: none;
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.photo:hover .photoImage,
+.photo:focus-within .photoImage {
+  transform: scale(1.025);
+  filter: brightness(0.9);
+}
+
+.photo:hover .photoCaption,
+.photo:focus-within .photoCaption {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (max-width: 900px) {
+  .page {
+    gap: 48px;
+  }
+
+  .hero {
+    height: clamp(220px, 48vw, 320px);
+  }
+
+  .heroLogoMark {
+    width: min(180px, 42%);
+  }
+
+  .heroLogo {
+    width: 96px;
+    height: 96px;
+  }
+
+  .meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metaValue {
+    white-space: pre-line;
+  }
+
+  .ndaText {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .split {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .splitCopy,
+  .reflection {
+    width: 100%;
+  }
+
+  .photos {
+    height: clamp(140px, 36vw, 220px);
+  }
+
+  .photoCaption {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .photoImage,
+  .photoCaption {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .photo:hover .photoImage,
+  .photo:focus-within .photoImage {
+    transform: none;
+    filter: brightness(0.9);
+  }
+
+  .photoCaption {
+    transform: none;
+  }
+
+  .photo:hover .photoCaption,
+  .photo:focus-within .photoCaption {
+    opacity: 1;
+  }
+}

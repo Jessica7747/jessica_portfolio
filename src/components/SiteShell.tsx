@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Footer } from "./Footer";
 import { Sidebar } from "./Sidebar";
 import styles from "./SiteShell.module.css";
 
@@ -27,7 +26,6 @@ export function SiteShell({
         >
           {children}
         </div>
-        <Footer />
       </div>
     </div>
   );
