@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import styles from "./CaseStudyModal.module.css";
+import styles from "./CaseStudyPage.module.css";
 
 type LoopingVideoProps = {
   src: string;

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoopingVideo } from "./LoopingVideo";
 import styles from "./ProjectCard.module.css";
@@ -12,7 +13,7 @@ type ProjectCardProps = {
   id?: string;
   staggerMs?: number;
   revealed?: boolean;
-  onOpen?: () => void;
+  href?: string;
 };
 
 export function ProjectCard({
@@ -22,7 +23,7 @@ export function ProjectCard({
   id,
   staggerMs = 0,
   revealed = false,
-  onOpen,
+  href,
 }: ProjectCardProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [revealSettled, setRevealSettled] = useState(false);
@@ -54,36 +55,8 @@ export function ProjectCard({
   const isVisible = revealed || reducedMotion;
   const motionActive = isVisible && !reducedMotion;
 
-  return (
-    <article
-      id={id}
-      className={[
-        styles.card,
-        isVisible ? styles.visible : "",
-        onOpen ? styles.clickable : "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-      style={{
-        transitionDelay:
-          reducedMotion || revealSettled || !isVisible
-            ? "0ms"
-            : `${staggerMs}ms`,
-      }}
-      onClick={onOpen}
-      onKeyDown={
-        onOpen
-          ? (event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                onOpen();
-              }
-            }
-          : undefined
-      }
-      role={onOpen ? "button" : undefined}
-      tabIndex={onOpen ? 0 : undefined}
-    >
+  const inner = (
+    <>
       <div
         className={[styles.thumb, styles[variant]].filter(Boolean).join(" ")}
       >
@@ -168,6 +141,33 @@ export function ProjectCard({
         <span>{company}</span>
         <span className={styles.captionMuted}> · {title}</span>
       </p>
+    </>
+  );
+
+  const className = [
+    styles.card,
+    isVisible ? styles.visible : "",
+    href ? styles.clickable : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const style = {
+    transitionDelay:
+      reducedMotion || revealSettled || !isVisible ? "0ms" : `${staggerMs}ms`,
+  };
+
+  if (href) {
+    return (
+      <Link id={id} href={href} className={className} style={style}>
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <article id={id} className={className} style={style}>
+      {inner}
     </article>
   );
 }

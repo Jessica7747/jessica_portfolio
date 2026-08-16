@@ -1,56 +1,9 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+.page {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
-  padding: clamp(12px, 2.5vh, 28px) clamp(12px, 2.5vw, 28px);
-  overflow-y: auto;
-  /* Don't animate opacity on this node — it kills backdrop-filter. */
-}
-
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  /* Apple material: frosted glass, not flat gray */
-  background: rgba(210, 210, 215, 0.28);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-}
-
-.dialog {
-  position: relative;
-  z-index: 1;
-  width: min(1240px, 100%);
-  max-height: none;
-  min-height: calc(100vh - clamp(24px, 5vh, 56px));
-  height: fit-content;
-  margin: auto;
-  overflow-y: auto;
-  display: flex;
+  width: 100%;
+  max-width: 1112px;
   flex-direction: column;
-  /* Figma: 64px between header block and body text */
   gap: 72px;
-  padding: 40px 56px 56px;
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  /*
-    No opacity/transform on this node — both blank <video> in Chromium.
-    Entrance is handled by the overlay backdrop + content reveals only.
-  */
-  box-shadow:
-    0 0 0 0.5px rgba(0, 0, 0, 0.04),
-    0 22px 70px rgba(0, 0, 0, 0.14);
-}
-
-.dialogVisible {
-  /* retained for JS class toggles; intentionally no visual transform */
 }
 
 /* Soft progressive content reveals — not dramatic */
@@ -78,35 +31,6 @@
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.close {
-  display: flex;
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.72);
-  font-size: 17px;
-  line-height: 1;
-  cursor: pointer;
-  transition:
-    background 180ms var(--ease-apple),
-    transform 180ms var(--ease-apple);
-}
-
-.close:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.close:active {
-  transform: scale(0.94);
 }
 
 .title {
@@ -124,7 +48,6 @@
   overflow: hidden;
   border-radius: var(--radius-card);
   background: #f5f5f7;
-  cursor: pointer;
 }
 
 .heroImage {
@@ -315,28 +238,21 @@
 }
 
 .photos {
-  display: flex;
+  display: grid;
   width: 100%;
-  height: clamp(200px, 28vw, 288px);
-  align-items: stretch;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 3fr);
   gap: 7px;
+  height: clamp(160px, 22vw, 288px);
 }
 
 .photo {
   position: relative;
-  flex: 0 0 auto;
-  width: calc(clamp(200px, 28vw, 288px) * 0.75);
+  width: 100%;
+  min-width: 0;
   height: 100%;
   overflow: hidden;
   border-radius: 14px;
   background: #f5f5f7;
-}
-
-.photoWide {
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
-  height: 100%;
 }
 
 .photoImage {
@@ -352,28 +268,30 @@
   right: 10px;
   bottom: 10px;
   z-index: 1;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(29, 29, 31, 0.72);
-  color: #f5f5f7;
+  padding: 9px 12px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(22, 22, 24, 0.48);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  color: rgba(255, 255, 255, 0.94);
   font-size: 12px;
   font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
   opacity: 0;
-  transform: translate3d(0, 6px, 0);
+  transform: translate3d(0, 12px, 0);
   transition:
-    opacity 280ms var(--ease-apple),
-    transform 280ms var(--ease-apple);
+    opacity 420ms var(--ease-apple),
+    transform 480ms var(--ease-apple);
   pointer-events: none;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 
 .photo:hover .photoImage,
 .photo:focus-within .photoImage {
-  transform: scale(1.03);
-  filter: brightness(0.92);
+  transform: scale(1.025);
+  filter: brightness(0.9);
 }
 
 .photo:hover .photoCaption,
@@ -382,115 +300,9 @@
   transform: translate3d(0, 0, 0);
 }
 
-.suggested {
-  width: 100%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.suggestedCard {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
-
-.suggestedThumb {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 14px;
-  background: var(--card-muted);
-}
-
-.suggestedCard:hover .suggestedImage {
-  transform: scale(1.03);
-}
-
-.suggestedCard:hover .suggestedLogo {
-  transform: translate(-50%, -50%) scale(1.03);
-}
-
-.suggestedImage {
-  object-fit: cover;
-  object-position: center;
-  transition: transform 500ms var(--ease-apple);
-}
-
-.suggest-apple .suggestedImage {
-  transform: scale(1.12);
-}
-
-.suggestedCard:hover .suggest-apple .suggestedImage {
-  transform: scale(1.15);
-}
-
-.suggestedLogo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 44px;
-  height: 44px;
-  transform: translate(-50%, -50%);
-  transition: transform 500ms var(--ease-apple);
-}
-
-.suggestLogoWide {
-  width: 100px;
-  height: 52px;
-}
-
-.suggestLogoSpotify {
-  width: 80px;
-  height: 28px;
-}
-
-.suggestedLogoImage {
-  object-fit: contain;
-}
-
-.suggestedCaption {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.014em;
-}
-
-.suggestedCaptionMuted {
-  color: var(--text-soft);
-  font-weight: 500;
-}
-
-@media (max-width: 1280px) {
-  .dialog {
-    width: min(1240px, calc(100% - 24px));
-  }
-}
-
 @media (max-width: 900px) {
-  .overlay {
-    padding: 8px;
-    align-items: stretch;
-  }
-
-  .dialog {
-    width: 100%;
-    min-height: calc(100vh - 16px);
-    max-height: none;
+  .page {
     gap: 48px;
-    padding: 28px 20px;
-    border-radius: 20px;
   }
 
   .hero {
@@ -525,50 +337,25 @@
   }
 
   .splitCopy,
-  .reflection,
-  .suggested {
+  .reflection {
     width: 100%;
   }
 
   .photos {
-    flex-direction: row;
-    height: clamp(120px, 28vw, 200px);
-  }
-
-  .photo {
-    flex: 0 0 auto;
-    width: calc(clamp(120px, 28vw, 200px) * 0.75);
-    height: 100%;
-  }
-
-  .photoWide {
-    flex: 1 1 auto;
-    width: auto;
-    min-width: 0;
-    height: 100%;
+    height: clamp(140px, 36vw, 220px);
   }
 
   .photoCaption {
     font-size: 11px;
-    padding: 7px 8px;
-  }
-
-  .suggested {
-    width: 100%;
-    gap: 12px;
+    padding: 8px 10px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dialog,
   .reveal,
   .photoImage,
   .photoCaption {
     transition: none;
-  }
-
-  .dialog {
-    transform: none;
   }
 
   .reveal {
@@ -579,9 +366,15 @@
   .photo:hover .photoImage,
   .photo:focus-within .photoImage {
     transform: none;
+    filter: brightness(0.9);
   }
 
   .photoCaption {
     transform: none;
+  }
+
+  .photo:hover .photoCaption,
+  .photo:focus-within .photoCaption {
+    opacity: 1;
   }
 }

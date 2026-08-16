@@ -1,4 +1,4 @@
-import type { CaseStudyContent } from "./CaseStudyModal";
+import type { CaseStudyContent } from "./CaseStudyPage";
 
 export const genkitCaseStudy: CaseStudyContent = {
   id: "genkit",
