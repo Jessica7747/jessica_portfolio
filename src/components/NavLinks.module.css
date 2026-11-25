@@ -37,9 +37,72 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
   width: 100%;
   min-width: 0;
+}
+
+.workHeader {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 24px hit area around a 14px glyph; points right when closed, down when open. */
+.workToggle {
+  display: inline-flex;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: -5px 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transform: rotate(-90deg);
+  transition:
+    transform 320ms var(--ease-apple),
+    background 180ms var(--ease-out),
+    color 180ms var(--ease-out);
+}
+
+.workToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text);
+}
+
+.workToggle:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+
+.workToggleOpen {
+  transform: rotate(0deg);
+}
+
+/* Height animates from 0 to the list's own height; the list stays mounted. */
+.workCollapse {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 320ms var(--ease-apple),
+    margin-top 320ms var(--ease-apple);
+}
+
+.workCollapseOpen {
+  margin-top: 8px;
+  grid-template-rows: 1fr;
+}
+
+.workCollapse > .workMenu {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .workMenu {
@@ -150,7 +213,9 @@
 @media (prefers-reduced-motion: reduce) {
   .link,
   .workItem,
-  .workHighlight {
+  .workHighlight,
+  .workToggle,
+  .workCollapse {
     transition: none;
   }
 }

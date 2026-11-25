@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -207,9 +208,12 @@ function WorkNavLink({
 
 export function NavLinks({ active }: NavLinksProps) {
   const pathname = usePathname();
-  const projectsOpen = pathname.startsWith("/work/");
+  const onCaseStudy = pathname.startsWith("/work/");
   const workActive =
-    active === "work" || pathname === "/" || projectsOpen;
+    active === "work" || pathname === "/" || onCaseStudy;
+  // Open by default on case studies; the chevron overrides it either way.
+  const [expanded, setExpanded] = useState<boolean | null>(null);
+  const projectsOpen = expanded ?? onCaseStudy;
 
   const menuRef = useRef<HTMLDivElement>(null);
   const highlightTargetRef = useRef<HTMLElement | null>(null);
@@ -278,16 +282,42 @@ export function NavLinks({ active }: NavLinksProps) {
         if (link.key === "work") {
           return (
             <div key={link.key} className={styles.workGroup}>
-              <Link
-                href={link.href}
-                className={[styles.link, workActive ? styles.active : ""]
+              <div className={styles.workHeader}>
+                <Link
+                  href={link.href}
+                  className={[styles.link, workActive ? styles.active : ""]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-current={workActive ? "page" : undefined}
+                >
+                  {link.label}
+                </Link>
+                <button
+                  type="button"
+                  className={[
+                    styles.workToggle,
+                    projectsOpen ? styles.workToggleOpen : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-expanded={projectsOpen}
+                  aria-controls="work-projects"
+                  aria-label={projectsOpen ? "Hide projects" : "Show projects"}
+                  onClick={() => setExpanded(!projectsOpen)}
+                >
+                  <ChevronDown size={14} strokeWidth={1.75} aria-hidden />
+                </button>
+              </div>
+              <div
+                id="work-projects"
+                className={[
+                  styles.workCollapse,
+                  projectsOpen ? styles.workCollapseOpen : "",
+                ]
                   .filter(Boolean)
                   .join(" ")}
-                aria-current={workActive ? "page" : undefined}
+                inert={!projectsOpen}
               >
-                {link.label}
-              </Link>
-              {projectsOpen ? (
                 <div
                   ref={menuRef}
                   className={styles.workMenu}
@@ -329,7 +359,7 @@ export function NavLinks({ active }: NavLinksProps) {
                     />
                   ))}
                 </div>
-              ) : null}
+              </div>
             </div>
           );
         }
