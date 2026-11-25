@@ -1,7 +1,6 @@
 .page {
   display: flex;
   width: 100%;
-  max-width: 1112px;
   flex-direction: column;
   gap: 72px;
 }

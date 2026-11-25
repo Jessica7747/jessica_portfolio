@@ -12,10 +12,12 @@
   align-items: flex-start;
 }
 
+/* Every page shares one content column: same left edge and same max width. */
 .content {
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
+  max-width: var(--content-max);
 }
 
 /* Collapse the fixed sidebar with the about/work content so mid widths

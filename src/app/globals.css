@@ -35,6 +35,7 @@
   --page-pad: 48px;
   --sidebar-width: 224px;
   --content-gap: 128px;
+  --content-max: 1112px;
   --radius-card: 28px;
   --font: "Google Sans", "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
