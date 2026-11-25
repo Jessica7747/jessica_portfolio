@@ -1,0 +1,254 @@
+/* Scroll-driven: --reveal goes 0 → 1 as the window rises into view. */
+.window {
+  --reveal: 0;
+  --edge: 0.28;
+  position: relative;
+  width: 100%;
+  height: clamp(260px, 42vh, 420px);
+  margin-top: 96px;
+  margin-bottom: calc(var(--page-pad) * -1);
+  overflow: hidden;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: #cfd5db;
+  isolation: isolate;
+}
+
+.window[data-tone="night"] {
+  background: #14161c;
+}
+
+.glass {
+  position: absolute;
+  inset: 0;
+  transform: scale(calc(1.06 - 0.06 * var(--reveal)));
+  transform-origin: 50% 100%;
+}
+
+.photo {
+  object-fit: cover;
+  filter: saturate(1.08) contrast(1.06);
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.window[data-ready] .photo {
+  opacity: 1;
+}
+
+.fog {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: none;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.window[data-ready] .fog {
+  opacity: 1;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Thick condensation that thins quickly as the window rises into view,
+   so the scene is readable well before the drawer is fully open. */
+.mist {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(236, 240, 244, 1);
+  opacity: calc((1 - var(--reveal)) * (1 - var(--reveal)) * 0.9);
+}
+
+/* Keeps the white caption and stamp legible over pale day scenes. */
+.scrim {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0));
+}
+
+.window[data-tone="night"] .mist {
+  background: rgba(24, 27, 34, 1);
+}
+
+.brush {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.toolbar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  max-width: calc(100% - 32px);
+  align-items: center;
+  gap: 8px;
+  opacity: clamp(0, calc((var(--reveal) - 0.25) * 2.2), 1);
+  transform: translate3d(0, calc((1 - var(--reveal)) * 12px), 0);
+}
+
+.prompt,
+.refog {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.prompt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.refog {
+  flex-shrink: 0;
+  border: 0;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 180ms var(--ease-out), background 180ms var(--ease-out);
+}
+
+.refog:hover,
+.refog:focus-visible {
+  background: rgba(255, 255, 255, 1);
+}
+
+.refog:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.caption {
+  position: absolute;
+  bottom: 18px;
+  left: 20px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 10px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: clamp(0, calc(var(--reveal) * 1.6), 1);
+}
+
+.place {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.credit {
+  font-size: 12px;
+  line-height: 1.3;
+  opacity: 0.92;
+}
+
+/* Film-camera date stamp, in white. */
+.stamp {
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  z-index: 2;
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #fff;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 1px 10px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: clamp(0, calc(var(--reveal) * 1.6), 1);
+}
+
+@media (hover: none) {
+  .brush {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .window {
+    margin-top: 72px;
+  }
+}
+
+@media (max-width: 900px) {
+  .window {
+    height: clamp(200px, 38vh, 300px);
+    margin-top: 56px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .toolbar {
+    top: 12px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .prompt,
+  .refog {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .caption {
+    bottom: 14px;
+    left: 14px;
+  }
+
+  .stamp {
+    right: 16px;
+    bottom: 14px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass {
+    transform: none;
+  }
+
+  .mist {
+    opacity: 0;
+  }
+
+  .photo,
+  .fog {
+    transition: none;
+  }
+}
