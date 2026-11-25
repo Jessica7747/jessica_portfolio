@@ -2,6 +2,7 @@
   position: relative;
   min-height: 100vh;
   padding: var(--page-pad);
+  overflow-x: clip;
 }
 
 .body {
@@ -20,31 +21,30 @@
   max-width: var(--content-max);
 }
 
-/* Opaque and above the footer, so the page slides up off the fog window. */
+/* Opaque and above the footer, so the page scrolls up off the fog window. */
 .content {
   position: relative;
   z-index: 1;
   flex: 1 1 auto;
   padding-bottom: 96px;
+}
+
+/* The curtain spans everything the footer does, out to the viewport edge. */
+.content::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 -100vw 0 0;
   background: var(--bg);
 }
 
-/* Contact shadow cast onto the window only, never past the column's sides. */
-.content::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  right: 0;
-  left: 0;
-  height: 28px;
-  background: linear-gradient(rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0));
-  pointer-events: none;
-}
-
+/* Starts at the cards' left edge and runs flush to the right and bottom. */
 .footer {
   position: sticky;
   bottom: 0;
   z-index: 0;
+  width: calc(100% + var(--page-pad));
+  max-width: none;
   margin-bottom: calc(var(--page-pad) * -1);
 }
 
@@ -65,6 +65,15 @@
 
   .content {
     padding-bottom: 72px;
+  }
+
+  .content::before {
+    inset: 0 calc(var(--page-pad) * -1);
+  }
+
+  .footer {
+    width: calc(100% + var(--page-pad) * 2);
+    margin-left: calc(var(--page-pad) * -1);
   }
 }
 

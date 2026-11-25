@@ -1,14 +1,9 @@
-/*
- * Pinned under the page and uncovered as the project column scrolls off it.
- * --reveal goes 0 → 1 over the last stretch of scroll; the window rises a
- * little as it's uncovered so it reads as sliding out from behind the cards.
- */
+/* Pinned under the page and held still; the content column scrolls off it. */
 .window {
-  --reveal: 0;
   --inset: 20px;
   position: relative;
   width: 100%;
-  height: clamp(260px, 42vh, 420px);
+  height: clamp(280px, 40vh, 440px);
   overflow: hidden;
   background: #cfd5db;
   isolation: isolate;
@@ -16,12 +11,6 @@
 
 .window[data-tone="night"] {
   background: #14161c;
-}
-
-.slide {
-  position: absolute;
-  inset: 0;
-  transform: translate3d(0, calc((1 - var(--reveal)) * 22%), 0);
 }
 
 .glass {
@@ -62,19 +51,6 @@
   opacity: 0.3;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Condensation thickest while the window is still tucked under the page. */
-.mist {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: rgb(236, 240, 244);
-  opacity: calc((1 - var(--reveal)) * (1 - var(--reveal)) * 0.9);
-}
-
-.window[data-tone="night"] .mist {
-  background: rgb(24, 27, 34);
 }
 
 /* Soft shade at the top and bottom edges keeps the white labels legible. */
@@ -207,10 +183,16 @@
   }
 }
 
+@media (max-width: 1100px) {
+  .window {
+    height: clamp(280px, 44vh, 400px);
+  }
+}
+
 @media (max-width: 900px) {
   .window {
     --inset: 16px;
-    height: clamp(200px, 38vh, 300px);
+    height: clamp(240px, 46vh, 340px);
   }
 
   .top {
@@ -227,14 +209,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .slide {
-    transform: none;
-  }
-
-  .mist {
-    opacity: 0;
-  }
-
   .photo,
   .fog,
   .refog {
