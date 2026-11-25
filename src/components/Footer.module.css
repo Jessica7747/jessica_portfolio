@@ -7,28 +7,29 @@
   gap: 12px;
 }
 
-.icons {
+.links {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
-.iconLink {
-  display: flex;
-  flex-shrink: 0;
-  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+.link {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: opacity 180ms var(--ease-apple);
 }
 
-.iconLink:hover {
-  opacity: 0.78;
-  transform: translateY(-1px);
+.link:hover {
+  opacity: 0.55;
 }
 
-.icon {
-  display: block;
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
+.link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 .copy {
