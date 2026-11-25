@@ -263,7 +263,7 @@ export function FogWindow() {
       data-ready={ready || undefined}
       aria-label={
         scene
-          ? `A fogged window looking out at ${scene.place}, shot on iPhone 16 Pro. Move your pointer or finger over it to wipe the fog.`
+          ? `A fogged window looking out at ${scene.place}, shot on iPhone. Move your pointer or finger over it to wipe the fog.`
           : "A fogged window"
       }
     >
@@ -315,7 +315,7 @@ export function FogWindow() {
         {scene ? (
           <div className={styles.caption}>
             <span className={styles.place}>{scene.place}</span>
-            <span className={styles.credit}>Shot on iPhone 16 Pro</span>
+            <span className={styles.credit}>Shot on iPhone</span>
           </div>
         ) : null}
         {stamp ? (
