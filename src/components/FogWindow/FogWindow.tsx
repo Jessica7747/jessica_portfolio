@@ -1,5 +1,6 @@
 "use client";
 
+import { RotateCcw } from "lucide-react";
 import Image from "next/image";
 import {
   useCallback,
@@ -136,12 +137,17 @@ export function FogWindow() {
       return;
     }
     let frame = 0;
+    // The window is pinned under the page, so progress comes from how much
+    // scroll is left before the page ends, not from the window's own box.
     const update = () => {
       frame = 0;
-      const rect = root.getBoundingClientRect();
-      const visible = (window.innerHeight - rect.top) / rect.height;
-      const progress = Math.min(1, Math.max(0, visible));
-      root.style.setProperty("--reveal", progress.toFixed(3));
+      const doc = document.documentElement;
+      const remaining = doc.scrollHeight - (window.scrollY + window.innerHeight);
+      const progress = 1 - remaining / root.offsetHeight;
+      root.style.setProperty(
+        "--reveal",
+        Math.min(1, Math.max(0, progress)).toFixed(3),
+      );
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -296,56 +302,66 @@ export function FogWindow() {
           : "A fogged window"
       }
     >
-      <div ref={glassRef} className={styles.glass}>
-        {scene ? (
-          <Image
-            key={scene.id}
-            src={scene.src}
-            alt=""
-            fill
-            unoptimized
-            sizes="(max-width: 1100px) 100vw, 1112px"
-            className={styles.photo}
+      <div className={styles.slide}>
+        <div ref={glassRef} className={styles.glass}>
+          {scene ? (
+            <Image
+              key={scene.id}
+              src={scene.src}
+              alt=""
+              fill
+              unoptimized
+              sizes="(max-width: 1100px) 100vw, 1112px"
+              className={styles.photo}
+            />
+          ) : null}
+          <canvas
+            ref={canvasRef}
+            className={styles.fog}
+            aria-hidden
+            onPointerMove={handlePointerMove}
+            onPointerDown={handlePointerDown}
+            onPointerUp={() => {
+              lastPointRef.current = null;
+            }}
+            onPointerLeave={handlePointerLeave}
+            onPointerCancel={handlePointerLeave}
           />
-        ) : null}
-        <canvas
-          ref={canvasRef}
-          className={styles.fog}
-          aria-hidden
-          onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown}
-          onPointerUp={() => {
-            lastPointRef.current = null;
-          }}
-          onPointerLeave={handlePointerLeave}
-          onPointerCancel={handlePointerLeave}
-        />
-        <div className={styles.grain} aria-hidden />
-        <div className={styles.scrim} aria-hidden />
-        <div className={styles.mist} aria-hidden />
-        <div ref={brushRef} className={styles.brush} aria-hidden />
-      </div>
-
-      <div className={styles.toolbar}>
-        <span className={styles.prompt}>
-          N train window seat · wipe the fog :)
-        </span>
-        <button type="button" className={styles.refog} onClick={handleRefog}>
-          Re-fog
-        </button>
-      </div>
-
-      {scene ? (
-        <div className={styles.caption}>
-          <span className={styles.place}>{scene.place}</span>
-          <span className={styles.credit}>Shot on iPhone 16 Pro</span>
+          <div className={styles.grain} aria-hidden />
+          <div className={styles.mist} aria-hidden />
+          <div className={styles.scrim} aria-hidden />
+          <div ref={brushRef} className={styles.brush} aria-hidden />
         </div>
-      ) : null}
-      {stamp ? (
-        <span className={styles.stamp} aria-hidden>
-          {stamp}
-        </span>
-      ) : null}
+
+        <div className={styles.top}>
+          <span className={styles.prompt}>
+            N train window seat · wipe the fog :)
+          </span>
+          <button
+            type="button"
+            className={styles.refog}
+            onClick={handleRefog}
+            aria-label="Re-fog the window"
+            title="Re-fog"
+          >
+            <RotateCcw size={16} strokeWidth={1.75} aria-hidden />
+          </button>
+        </div>
+
+        <div className={styles.bottom}>
+          {scene ? (
+            <div className={styles.caption}>
+              <span className={styles.place}>{scene.place}</span>
+              <span className={styles.credit}>Shot on iPhone 16 Pro</span>
+            </div>
+          ) : null}
+          {stamp ? (
+            <span className={styles.stamp} aria-hidden>
+              {stamp}
+            </span>
+          ) : null}
+        </div>
+      </div>
     </section>
   );
 }
