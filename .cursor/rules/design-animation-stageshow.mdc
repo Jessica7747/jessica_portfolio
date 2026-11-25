@@ -1,0 +1,11 @@
+---
+description: Use the stageshow skill for all design, UI polish, mockup and animation work
+alwaysApply: true
+---
+
+For any design, visual polish, mockup, illustration, or animation/motion task in this repo, read `.agents/skills/stageshow/SKILL.md` before writing code and follow its workflow (plan, closest gold example, craft and motion references, rehearse at the shown width and 390px).
+
+- Every motion has a cause; the payoff holds; loops reset with a visible cause.
+- Always ship a `prefers-reduced-motion` fallback.
+- Verify layouts at desktop, ~1000px, ~800px and 390px.
+- Don't import from `.agents/`; copy any kit parts you need into `src/`.
