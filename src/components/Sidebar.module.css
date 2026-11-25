@@ -50,7 +50,7 @@
   color: var(--text-soft);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .sidebar {
     position: static;
     top: auto;
@@ -58,6 +58,7 @@
     left: auto;
     z-index: auto;
     width: 100%;
+    max-width: 36rem;
     gap: 24px;
   }
 }

@@ -27,7 +27,7 @@ export function AboutIntro({ active }: AboutIntroProps) {
             alt="Jessica Liu"
             fill
             className={styles.photoImage}
-            sizes="304px"
+            sizes="(max-width: 1100px) 100vw, 304px"
             priority
           />
         </div>

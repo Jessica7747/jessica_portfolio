@@ -8,9 +8,7 @@
 
 .grid {
   display: flex;
-  width: 85%;
-  max-width: 85%;
-  margin-left: auto;
+  width: 100%;
   flex-direction: column;
   gap: 64px;
   overflow: visible;
@@ -18,9 +16,6 @@
 
 @media (max-width: 900px) {
   .grid {
-    width: 100%;
-    max-width: none;
-    margin-left: 0;
     gap: 40px;
   }
 }
