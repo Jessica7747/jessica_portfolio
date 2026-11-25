@@ -35,8 +35,9 @@
   --panel: #ececef;
   --page-pad: 48px;
   --sidebar-width: 224px;
-  --content-gap: 128px;
-  --content-max: 1112px;
+  --panel-pad-x: 32px;
+  --panel-width: calc(var(--sidebar-width) + var(--panel-pad-x) * 2);
+  --content-max: 1520px;
   --radius-card: 28px;
   --font: "Google Sans", "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
     sans-serif;

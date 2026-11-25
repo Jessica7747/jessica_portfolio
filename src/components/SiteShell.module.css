@@ -8,7 +8,7 @@
 .body {
   display: flex;
   min-height: calc(100vh - (var(--page-pad) * 2));
-  margin-left: calc(var(--sidebar-width) + var(--content-gap));
+  margin-left: var(--panel-width);
   flex-direction: column;
   align-items: flex-start;
 }
@@ -34,7 +34,7 @@
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 0 -100vw 0 calc(var(--page-pad) - var(--content-gap));
+  inset: 0 -100vw 0 calc(var(--page-pad) * -1);
   background: var(--bg);
 }
 
@@ -43,10 +43,10 @@
   position: sticky;
   bottom: 0;
   z-index: 0;
-  width: calc(100% + var(--content-gap));
+  width: calc(100% + var(--page-pad) * 2);
   max-width: none;
   margin-bottom: calc(var(--page-pad) * -1);
-  margin-left: calc(var(--page-pad) - var(--content-gap));
+  margin-left: calc(var(--page-pad) * -1);
 }
 
 /* Collapse the fixed sidebar with the about/work content so mid widths
@@ -70,11 +70,6 @@
 
   .content::before {
     inset: 0 calc(var(--page-pad) * -1);
-  }
-
-  .footer {
-    width: calc(100% + var(--page-pad) * 2);
-    margin-left: calc(var(--page-pad) * -1);
   }
 }
 
