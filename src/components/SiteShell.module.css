@@ -34,18 +34,19 @@
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 0 -100vw 0 0;
+  inset: 0 -100vw 0 calc(var(--page-pad) - var(--content-gap));
   background: var(--bg);
 }
 
-/* Starts at the cards' left edge and runs flush to the right and bottom. */
+/* Runs from the sidebar panel's edge flush to the right and bottom. */
 .footer {
   position: sticky;
   bottom: 0;
   z-index: 0;
-  width: calc(100% + var(--page-pad));
+  width: calc(100% + var(--content-gap));
   max-width: none;
   margin-bottom: calc(var(--page-pad) * -1);
+  margin-left: calc(var(--page-pad) - var(--content-gap));
 }
 
 /* Collapse the fixed sidebar with the about/work content so mid widths
