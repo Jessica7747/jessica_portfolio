@@ -65,8 +65,13 @@
   transform: rotate(-90deg);
   transition:
     transform 320ms var(--ease-apple),
+    opacity 180ms var(--ease-apple),
     background 180ms var(--ease-out),
     color 180ms var(--ease-out);
+}
+
+.workHeader:has(.link:hover) .workToggle {
+  opacity: 0.55;
 }
 
 .workToggle:hover {

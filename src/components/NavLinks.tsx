@@ -9,6 +9,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import {
@@ -27,6 +28,24 @@ const links = [
 const CASE_STUDY_SLUGS = new Set<ProjectVariant>(["apple", "genkit", "spotify"]);
 
 type NavKey = (typeof links)[number]["key"];
+
+// Each page mounts its own sidebar, so the open/closed choice lives outside the
+// component to survive navigation. null means the visitor hasn't chosen yet.
+let workExpanded: boolean | null = null;
+const workExpandedListeners = new Set<() => void>();
+
+function setWorkExpanded(next: boolean) {
+  workExpanded = next;
+  workExpandedListeners.forEach((listener) => listener());
+}
+
+function subscribeWorkExpanded(listener: () => void) {
+  workExpandedListeners.add(listener);
+  return () => workExpandedListeners.delete(listener);
+}
+
+const readWorkExpanded = () => workExpanded;
+const readServerWorkExpanded = () => null;
 
 type WorkNavLeaf = {
   label: string;
@@ -211,8 +230,12 @@ export function NavLinks({ active }: NavLinksProps) {
   const onCaseStudy = pathname.startsWith("/work/");
   const workActive =
     active === "work" || pathname === "/" || onCaseStudy;
-  // Open by default on case studies; the chevron overrides it either way.
-  const [expanded, setExpanded] = useState<boolean | null>(null);
+  // Open by default on case studies; Work and the chevron override it either way.
+  const expanded = useSyncExternalStore(
+    subscribeWorkExpanded,
+    readWorkExpanded,
+    readServerWorkExpanded,
+  );
   const projectsOpen = expanded ?? onCaseStudy;
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -289,6 +312,17 @@ export function NavLinks({ active }: NavLinksProps) {
                     .filter(Boolean)
                     .join(" ")}
                   aria-current={workActive ? "page" : undefined}
+                  aria-expanded={projectsOpen}
+                  aria-controls="work-projects"
+                  onClick={(event) => {
+                    // Already on Work: the label toggles the list instead of reloading the page.
+                    if (pathname === link.href) {
+                      event.preventDefault();
+                      setWorkExpanded(!projectsOpen);
+                    } else {
+                      setWorkExpanded(true);
+                    }
+                  }}
                 >
                   {link.label}
                 </Link>
@@ -303,7 +337,7 @@ export function NavLinks({ active }: NavLinksProps) {
                   aria-expanded={projectsOpen}
                   aria-controls="work-projects"
                   aria-label={projectsOpen ? "Hide projects" : "Show projects"}
-                  onClick={() => setExpanded(!projectsOpen)}
+                  onClick={() => setWorkExpanded(!projectsOpen)}
                 >
                   <ChevronDown size={14} strokeWidth={1.75} aria-hidden />
                 </button>
