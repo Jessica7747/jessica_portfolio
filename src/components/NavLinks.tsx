@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import {
@@ -26,6 +28,24 @@ const links = [
 const CASE_STUDY_SLUGS = new Set<ProjectVariant>(["apple", "genkit", "spotify"]);
 
 type NavKey = (typeof links)[number]["key"];
+
+// Each page mounts its own sidebar, so the open/closed choice lives outside the
+// component to survive navigation. null means the visitor hasn't chosen yet.
+let workExpanded: boolean | null = null;
+const workExpandedListeners = new Set<() => void>();
+
+function setWorkExpanded(next: boolean) {
+  workExpanded = next;
+  workExpandedListeners.forEach((listener) => listener());
+}
+
+function subscribeWorkExpanded(listener: () => void) {
+  workExpandedListeners.add(listener);
+  return () => workExpandedListeners.delete(listener);
+}
+
+const readWorkExpanded = () => workExpanded;
+const readServerWorkExpanded = () => null;
 
 type WorkNavLeaf = {
   label: string;
@@ -207,9 +227,16 @@ function WorkNavLink({
 
 export function NavLinks({ active }: NavLinksProps) {
   const pathname = usePathname();
-  const projectsOpen = pathname.startsWith("/work/");
+  const onCaseStudy = pathname.startsWith("/work/");
   const workActive =
-    active === "work" || pathname === "/" || projectsOpen;
+    active === "work" || pathname === "/" || onCaseStudy;
+  // Open by default on case studies; Work and the chevron override it either way.
+  const expanded = useSyncExternalStore(
+    subscribeWorkExpanded,
+    readWorkExpanded,
+    readServerWorkExpanded,
+  );
+  const projectsOpen = expanded ?? onCaseStudy;
 
   const menuRef = useRef<HTMLDivElement>(null);
   const highlightTargetRef = useRef<HTMLElement | null>(null);
@@ -278,16 +305,53 @@ export function NavLinks({ active }: NavLinksProps) {
         if (link.key === "work") {
           return (
             <div key={link.key} className={styles.workGroup}>
-              <Link
-                href={link.href}
-                className={[styles.link, workActive ? styles.active : ""]
+              <div className={styles.workHeader}>
+                <Link
+                  href={link.href}
+                  className={[styles.link, workActive ? styles.active : ""]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-current={workActive ? "page" : undefined}
+                  aria-expanded={projectsOpen}
+                  aria-controls="work-projects"
+                  onClick={(event) => {
+                    // Already on Work: the label toggles the list instead of reloading the page.
+                    if (pathname === link.href) {
+                      event.preventDefault();
+                      setWorkExpanded(!projectsOpen);
+                    } else {
+                      setWorkExpanded(true);
+                    }
+                  }}
+                >
+                  {link.label}
+                </Link>
+                <button
+                  type="button"
+                  className={[
+                    styles.workToggle,
+                    projectsOpen ? styles.workToggleOpen : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-expanded={projectsOpen}
+                  aria-controls="work-projects"
+                  aria-label={projectsOpen ? "Hide projects" : "Show projects"}
+                  onClick={() => setWorkExpanded(!projectsOpen)}
+                >
+                  <ChevronDown size={14} strokeWidth={1.75} aria-hidden />
+                </button>
+              </div>
+              <div
+                id="work-projects"
+                className={[
+                  styles.workCollapse,
+                  projectsOpen ? styles.workCollapseOpen : "",
+                ]
                   .filter(Boolean)
                   .join(" ")}
-                aria-current={workActive ? "page" : undefined}
+                inert={!projectsOpen}
               >
-                {link.label}
-              </Link>
-              {projectsOpen ? (
                 <div
                   ref={menuRef}
                   className={styles.workMenu}
@@ -329,7 +393,7 @@ export function NavLinks({ active }: NavLinksProps) {
                     />
                   ))}
                 </div>
-              ) : null}
+              </div>
             </div>
           );
         }

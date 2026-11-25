@@ -32,10 +32,12 @@
   --placeholder: #1d1d1f;
   --card-muted: rgba(0, 0, 0, 0.03);
   --hairline: rgba(0, 0, 0, 0.08);
+  --panel: #f0f0f2;
   --page-pad: 48px;
   --sidebar-width: 224px;
-  --content-gap: 128px;
-  --content-max: 1112px;
+  --panel-pad-x: 32px;
+  --panel-width: calc(var(--sidebar-width) + var(--panel-pad-x) * 2);
+  --content-max: 1520px;
   --radius-card: 28px;
   --font: "Google Sans", "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
     sans-serif;

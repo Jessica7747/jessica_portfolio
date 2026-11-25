@@ -154,9 +154,11 @@
   font-weight: 500;
 }
 
+/* Images run the full column; prose stops at a readable measure. */
 .splitCopy,
 .reflection {
   min-width: 0;
+  max-width: 72ch;
 }
 
 .nda {

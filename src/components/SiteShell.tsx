@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FogWindow } from "./FogWindow/FogWindow";
 import { Sidebar } from "./Sidebar";
 import styles from "./SiteShell.module.css";
 
@@ -25,6 +26,9 @@ export function SiteShell({
             .join(" ")}
         >
           {children}
+        </div>
+        <div className={styles.footer}>
+          <FogWindow />
         </div>
       </div>
     </div>

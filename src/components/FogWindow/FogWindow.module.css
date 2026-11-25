@@ -1,0 +1,245 @@
+/* Pinned under the page and held still; the content column scrolls off it. */
+.window {
+  --inset: 20px;
+  position: relative;
+  width: 100%;
+  height: clamp(280px, 40vh, 440px);
+  overflow: hidden;
+  background: #cfd5db;
+  isolation: isolate;
+}
+
+.window[data-tone="night"] {
+  background: #14161c;
+}
+
+.glass {
+  position: absolute;
+  inset: 0;
+}
+
+.photo {
+  object-fit: cover;
+  filter: saturate(1.08) contrast(1.06);
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.window[data-ready] .photo {
+  opacity: 1;
+}
+
+.fog {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: none;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.window[data-ready] .fog {
+  opacity: 1;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Soft shade at the top and bottom edges keeps the white labels legible. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 80px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 96px);
+}
+
+.brush {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.top,
+.bottom {
+  position: absolute;
+  right: var(--inset);
+  left: var(--inset);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #fff;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 1px 10px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.top {
+  top: 14px;
+}
+
+/* Prompt centered, caption in the right corner; the empty left track keeps the
+   prompt on the window's center line. */
+.bottom {
+  bottom: var(--inset);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+}
+
+.prompt {
+  grid-column: 2;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* 32px hit area; the 16px glyph's edge lines up with the shared inset. */
+.refog {
+  display: inline-flex;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-right: -8px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background 180ms var(--ease-out),
+    transform 420ms var(--ease-apple);
+}
+
+.refog:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: rotate(-180deg);
+}
+
+.refog:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+
+.caption {
+  display: flex;
+  min-width: 0;
+  grid-column: 3;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.place {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.016em;
+}
+
+.credit {
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  opacity: 0.92;
+}
+
+/* Film-camera date stamp, in white. */
+.stamp {
+  display: inline-flex;
+  flex: none;
+  gap: 1.1em;
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.14em;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 1px 10px rgba(0, 0, 0, 0.3);
+}
+
+.promptTouch {
+  display: none;
+}
+
+@media (hover: none) {
+  .brush,
+  .promptHover {
+    display: none;
+  }
+
+  .promptTouch {
+    display: inline;
+  }
+}
+
+/* Too narrow to center the prompt beside the caption: it takes the left corner. */
+@media (max-width: 600px) {
+  .bottom {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .prompt {
+    grid-column: 1;
+  }
+
+  .caption {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 1100px) {
+  .window {
+    height: clamp(280px, 44vh, 400px);
+  }
+}
+
+@media (max-width: 900px) {
+  .window {
+    --inset: 16px;
+    height: clamp(240px, 46vh, 340px);
+  }
+
+  .top {
+    top: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo,
+  .fog,
+  .refog {
+    transition: none;
+  }
+
+  .refog:hover {
+    transform: none;
+  }
+}
