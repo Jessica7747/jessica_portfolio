@@ -98,11 +98,11 @@ export function paintFog(
 
   ctx.globalCompositeOperation = "destination-out";
 
-  const trails = Math.max(3, Math.round(width / (90 * dpr)));
+  const trails = Math.max(2, Math.round(width / (240 * dpr)));
   for (let i = 0; i < trails; i += 1) {
     let x = rand() * width;
     let y = rand() * height * 0.45;
-    const end = y + height * (0.25 + rand() * 0.6);
+    const end = y + height * (0.15 + rand() * 0.3);
     const lineWidth = (1.1 + rand() * 1.7) * dpr;
     ctx.lineCap = "round";
     ctx.lineWidth = lineWidth;

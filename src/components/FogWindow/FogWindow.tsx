@@ -12,6 +12,7 @@ import {
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { paintFog, paintSpeckles } from "./paintFog";
 import {
+  formatLocalTime,
   formatStamp,
   pickScene,
   sceneById,
@@ -45,11 +46,27 @@ function readVisit(): Visit {
 const subscribeNoop = () => () => {};
 const readServerVisit = () => null;
 
+// Ticks on each minute boundary so the stamp's clock stays on the visitor's time.
+function subscribeMinute(onChange: () => void) {
+  let timer = 0;
+  const schedule = () => {
+    timer = window.setTimeout(() => {
+      onChange();
+      schedule();
+    }, 60_000 - (Date.now() % 60_000));
+  };
+  schedule();
+  return () => window.clearTimeout(timer);
+}
+const readLocalTime = () => formatLocalTime(new Date());
+const readServerTime = () => "";
+
 export function FogWindow() {
   const reducedMotion = usePrefersReducedMotion();
   const current = useSyncExternalStore(subscribeNoop, readVisit, readServerVisit);
   const scene = current?.scene ?? null;
   const stamp = current?.stamp ?? "";
+  const localTime = useSyncExternalStore(subscribeMinute, readLocalTime, readServerTime);
   const [readyId, setReadyId] = useState<string | null>(null);
   const ready = scene !== null && readyId === scene.id;
 
@@ -297,9 +314,12 @@ export function FogWindow() {
       </div>
 
       <div className={styles.top}>
-        <span className={styles.prompt}>
-          N train window seat · wipe the fog :)
-        </span>
+        {stamp ? (
+          <span className={styles.stamp} aria-hidden>
+            <span>{stamp}</span>
+            <span>{localTime}</span>
+          </span>
+        ) : null}
         <button
           type="button"
           className={styles.refog}
@@ -312,16 +332,15 @@ export function FogWindow() {
       </div>
 
       <div className={styles.bottom}>
+        <span className={styles.prompt} aria-hidden>
+          <span className={styles.promptHover}>Hover to wipe the fog</span>
+          <span className={styles.promptTouch}>Drag to wipe the fog</span>
+        </span>
         {scene ? (
           <div className={styles.caption}>
             <span className={styles.place}>{scene.place}</span>
             <span className={styles.credit}>Shot on iPhone</span>
           </div>
-        ) : null}
-        {stamp ? (
-          <span className={styles.stamp} aria-hidden>
-            {stamp}
-          </span>
         ) : null}
       </div>
     </section>

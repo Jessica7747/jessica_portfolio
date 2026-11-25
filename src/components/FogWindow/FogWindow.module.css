@@ -97,15 +97,17 @@
   top: 14px;
 }
 
+/* Prompt centered, caption in the right corner; the empty left track keeps the
+   prompt on the window's center line. */
 .bottom {
   bottom: var(--inset);
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
 }
 
 .prompt {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  grid-column: 2;
   white-space: nowrap;
   font-size: 13px;
   line-height: 1.35;
@@ -146,8 +148,11 @@
 .caption {
   display: flex;
   min-width: 0;
+  grid-column: 3;
   flex-direction: column;
+  align-items: flex-end;
   gap: 2px;
+  text-align: right;
 }
 
 .place {
@@ -166,7 +171,9 @@
 
 /* Film-camera date stamp, in white. */
 .stamp {
+  display: inline-flex;
   flex: none;
+  gap: 1.1em;
   font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font-size: 13px;
   font-weight: 600;
@@ -178,9 +185,33 @@
     0 1px 10px rgba(0, 0, 0, 0.3);
 }
 
+.promptTouch {
+  display: none;
+}
+
 @media (hover: none) {
-  .brush {
+  .brush,
+  .promptHover {
     display: none;
+  }
+
+  .promptTouch {
+    display: inline;
+  }
+}
+
+/* Too narrow to center the prompt beside the caption: it takes the left corner. */
+@media (max-width: 600px) {
+  .bottom {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .prompt {
+    grid-column: 1;
+  }
+
+  .caption {
+    grid-column: 2;
   }
 }
 

@@ -90,3 +90,7 @@ export function formatStamp(now: Date): string {
   const year = String(now.getFullYear()).slice(-2);
   return `${now.getMonth() + 1} ${now.getDate()} '${year}`;
 }
+
+export function formatLocalTime(now: Date): string {
+  return now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
