@@ -16,25 +16,22 @@ export function Sidebar({
   return (
     <aside className={styles.sidebar}>
       <div className={styles.top}>
-        <div className={styles.header}>
-          <Link
-            href="/"
-            className={styles.avatar}
-            aria-label="Home"
-          >
-            <Image
-              src="/images/logo.png"
-              alt="Jessica Liu"
-              width={75}
-              height={75}
-              className={styles.avatarImage}
-              sizes="75px"
-              quality={95}
-              priority
-            />
-          </Link>
-          <NavLinks active={active} />
-        </div>
+        <Link
+          href="/"
+          className={styles.avatar}
+          aria-label="Home"
+        >
+          <Image
+            src="/images/logo.png"
+            alt="Jessica Liu"
+            width={75}
+            height={75}
+            className={styles.avatarImage}
+            sizes="75px"
+            quality={95}
+            priority
+          />
+        </Link>
         <p className={styles.bio}>
           <span>
             I&apos;m Jessica, a product designer on an adventure to design
@@ -42,6 +39,7 @@ export function Sidebar({
           </span>
           <span className={styles.bioMuted}>{previousAt}</span>
         </p>
+        <NavLinks active={active} />
       </div>
       <Footer />
     </aside>
