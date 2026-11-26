@@ -314,12 +314,11 @@ export function FogWindow() {
       </div>
 
       <div className={styles.top}>
-        {stamp ? (
-          <span className={styles.stamp} aria-hidden>
-            <span>{stamp}</span>
-            <span>{localTime}</span>
-          </span>
-        ) : null}
+        {/* Always mounted so the stamp owns the top-left corner before the date loads. */}
+        <span className={styles.stamp} aria-hidden>
+          <span>{stamp}</span>
+          <span>{localTime}</span>
+        </span>
         <button
           type="button"
           className={styles.refog}

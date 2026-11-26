@@ -98,15 +98,15 @@ export function paintFog(
 
   ctx.globalCompositeOperation = "destination-out";
 
-  const trails = Math.max(2, Math.round(width / (240 * dpr)));
+  const trails = Math.max(1, Math.round(width / (520 * dpr)));
   for (let i = 0; i < trails; i += 1) {
     let x = rand() * width;
     let y = rand() * height * 0.45;
-    const end = y + height * (0.15 + rand() * 0.3);
-    const lineWidth = (1.1 + rand() * 1.7) * dpr;
+    const end = y + height * (0.08 + rand() * 0.14);
+    const lineWidth = (0.9 + rand() * 1.1) * dpr;
     ctx.lineCap = "round";
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
     ctx.beginPath();
     ctx.moveTo(x, y);
     while (y < end) {

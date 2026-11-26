@@ -23,26 +23,57 @@
 }
 
 :root {
-  /* Apple-adjacent editorial palette */
-  --bg: #f5f5f7;
+  /* Background, Primary Text, Secondary Text, Footer Text, Interactive Hover */
+  --bg: #ffffff;
+  --text: #000000;
+  --text-secondary: #b3b3b3;
+  --text-footer: #999999;
+  --text-hover: #000000;
+
+  /* Long-form copy inside case studies and cards */
   --surface: #ffffff;
-  --text: #1d1d1f;
   --text-muted: #6e6e73;
   --text-soft: #86868b;
   --placeholder: #1d1d1f;
   --card-muted: rgba(0, 0, 0, 0.03);
-  --hairline: rgba(0, 0, 0, 0.08);
-  --panel: #f0f0f2;
-  --page-pad: 48px;
-  --sidebar-width: 224px;
-  --panel-pad-x: 32px;
-  --panel-width: calc(var(--sidebar-width) + var(--panel-pad-x) * 2);
+
+  /* Layout: desktop 1250px+, tablet 850–1249px, mobile below 850px */
+  --sidebar-width: 400px;
+  --sidebar-pad: 32px;
+  --section-pad-x: 40px;
+  --section-pad-bottom: 96px;
   --content-max: 1520px;
+
+  /* Sidebar type */
+  --type-ui: 16px;
+  --leading-copy: 1.4;
+  --type-footer: 12px;
+  --leading-footer: 1.625;
+
   --radius-card: 28px;
   --font: "Google Sans", "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
     sans-serif;
   --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 1249px) {
+  :root {
+    --sidebar-width: 340px;
+    --section-pad-x: 32px;
+    --section-pad-bottom: 72px;
+    --type-ui: 14px;
+    --leading-copy: 1.6;
+  }
+}
+
+@media (max-width: 849px) {
+  :root {
+    --sidebar-pad: 16px;
+    --section-pad-x: 16px;
+    --section-pad-bottom: 56px;
+    --type-ui: 12px;
+  }
 }
 
 * {

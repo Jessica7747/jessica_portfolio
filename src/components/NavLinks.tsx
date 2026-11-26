@@ -281,8 +281,6 @@ export function NavLinks({ active }: NavLinksProps) {
   useLayoutEffect(() => {
     if (!projectsOpen) {
       highlightTargetRef.current = null;
-      setHighlight(null);
-      setHighlightVisible(false);
       return;
     }
     syncHighlightToActive();
@@ -369,7 +367,9 @@ export function NavLinks({ active }: NavLinksProps) {
                   <div
                     className={[
                       styles.workHighlight,
-                      highlightVisible ? styles.workHighlightVisible : "",
+                      projectsOpen && highlightVisible
+                        ? styles.workHighlightVisible
+                        : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}

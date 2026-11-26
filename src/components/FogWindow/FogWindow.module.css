@@ -121,6 +121,7 @@
   width: 32px;
   height: 32px;
   margin-right: -8px;
+  margin-left: auto;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -215,13 +216,13 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1249px) {
   .window {
     height: clamp(280px, 44vh, 400px);
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 849px) {
   .window {
     --inset: 16px;
     height: clamp(240px, 46vh, 340px);
