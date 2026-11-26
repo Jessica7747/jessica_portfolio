@@ -21,6 +21,7 @@ const links = [
 export function Footer() {
   return (
     <footer className={styles.footer} data-node-id="1:69">
+      <span className={styles.copy}>Jessica Liu © 2026</span>
       <div className={styles.links}>
         {links.map((link) => (
           <a
@@ -35,7 +36,6 @@ export function Footer() {
           </a>
         ))}
       </div>
-      <span className={styles.copy}>Jessica Liu © 2026</span>
     </footer>
   );
 }

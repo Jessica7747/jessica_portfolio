@@ -4,14 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type ReactNode,
-} from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import {
   projects,
   type Project,
@@ -52,13 +45,6 @@ type WorkNavLeaf = {
   variant: ProjectVariant;
 };
 
-type HighlightBox = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
 type NavLinksProps = {
   active: NavKey;
 };
@@ -80,15 +66,6 @@ const workNav: WorkNavLeaf[] = projects.map((project) => ({
   label: navLabel(project),
   variant: project.variant,
 }));
-
-function measureItem(menu: HTMLElement, item: HTMLElement): HighlightBox {
-  return {
-    x: item.offsetLeft,
-    y: item.offsetTop,
-    width: item.offsetWidth,
-    height: item.offsetHeight,
-  };
-}
 
 function AppleMark() {
   return (
@@ -195,11 +172,9 @@ function companyLogo(variant: ProjectVariant): ReactNode {
 function WorkNavLink({
   item,
   pathname,
-  onHighlight,
 }: {
   item: WorkNavLeaf;
   pathname: string;
-  onHighlight: (el: HTMLElement) => void;
 }) {
   const href = projectHref(item.variant);
   const isProjectActive = pathname === `/work/${item.variant}`;
@@ -216,8 +191,6 @@ function WorkNavLink({
         .filter(Boolean)
         .join(" ")}
       aria-current={isProjectActive ? "page" : undefined}
-      onMouseEnter={(event) => onHighlight(event.currentTarget)}
-      onFocus={(event) => onHighlight(event.currentTarget)}
     >
       {logo ? <span className={styles.workLogo}>{logo}</span> : null}
       <span className={styles.workLabel}>{item.label}</span>
@@ -238,67 +211,6 @@ export function NavLinks({ active }: NavLinksProps) {
   );
   const projectsOpen = expanded ?? onCaseStudy;
 
-  const menuRef = useRef<HTMLDivElement>(null);
-  const highlightTargetRef = useRef<HTMLElement | null>(null);
-  const [highlight, setHighlight] = useState<HighlightBox | null>(null);
-  const [highlightVisible, setHighlightVisible] = useState(false);
-
-  const moveHighlightTo = useCallback((el: HTMLElement) => {
-    const menu = menuRef.current;
-    if (!menu) return;
-    highlightTargetRef.current = el;
-    setHighlight(measureItem(menu, el));
-    setHighlightVisible(true);
-  }, []);
-
-  const syncHighlightToActive = useCallback(() => {
-    const menu = menuRef.current;
-    if (!menu) return;
-    const activeItem = menu.querySelector<HTMLElement>(
-      `.${styles.workItem}[aria-current="page"]`,
-    );
-    if (activeItem) {
-      highlightTargetRef.current = activeItem;
-      setHighlight(measureItem(menu, activeItem));
-      setHighlightVisible(true);
-      return;
-    }
-    highlightTargetRef.current = null;
-    setHighlightVisible(false);
-  }, []);
-
-  const remeasureCurrentTarget = useCallback(() => {
-    const menu = menuRef.current;
-    const target = highlightTargetRef.current;
-    if (!menu || !target || !menu.contains(target)) return;
-    setHighlight(measureItem(menu, target));
-  }, []);
-
-  const handleMenuLeave = useCallback(() => {
-    syncHighlightToActive();
-  }, [syncHighlightToActive]);
-
-  useLayoutEffect(() => {
-    if (!projectsOpen) {
-      highlightTargetRef.current = null;
-      setHighlight(null);
-      setHighlightVisible(false);
-      return;
-    }
-    syncHighlightToActive();
-  }, [pathname, projectsOpen, syncHighlightToActive]);
-
-  useLayoutEffect(() => {
-    if (!projectsOpen) return;
-    const menu = menuRef.current;
-    if (!menu || typeof ResizeObserver === "undefined") return;
-
-    const observer = new ResizeObserver(() => {
-      remeasureCurrentTarget();
-    });
-    observer.observe(menu);
-    return () => observer.disconnect();
-  }, [projectsOpen, remeasureCurrentTarget]);
   return (
     <nav className={styles.nav} aria-label="Primary">
       {links.map((link) => {
@@ -339,7 +251,7 @@ export function NavLinks({ active }: NavLinksProps) {
                   aria-label={projectsOpen ? "Hide projects" : "Show projects"}
                   onClick={() => setWorkExpanded(!projectsOpen)}
                 >
-                  <ChevronDown size={14} strokeWidth={1.75} aria-hidden />
+                  <ChevronDown size="1em" strokeWidth={1.75} aria-hidden />
                 </button>
               </div>
               <div
@@ -352,44 +264,12 @@ export function NavLinks({ active }: NavLinksProps) {
                   .join(" ")}
                 inert={!projectsOpen}
               >
-                <div
-                  ref={menuRef}
-                  className={styles.workMenu}
-                  onMouseLeave={handleMenuLeave}
-                  onBlur={(event) => {
-                    if (
-                      !event.currentTarget.contains(
-                        event.relatedTarget as Node | null,
-                      )
-                    ) {
-                      handleMenuLeave();
-                    }
-                  }}
-                >
-                  <div
-                    className={[
-                      styles.workHighlight,
-                      highlightVisible ? styles.workHighlightVisible : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    style={
-                      highlight
-                        ? {
-                            width: highlight.width,
-                            height: highlight.height,
-                            transform: `translate(${highlight.x}px, ${highlight.y}px)`,
-                          }
-                        : undefined
-                    }
-                    aria-hidden
-                  />
+                <div className={styles.workMenu}>
                   {workNav.map((item) => (
                     <WorkNavLink
                       key={item.variant}
                       item={item}
                       pathname={pathname}
-                      onHighlight={moveHighlightTo}
                     />
                   ))}
                 </div>
